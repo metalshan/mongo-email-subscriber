@@ -5,44 +5,38 @@ var app = express();
 //module.exports = function(app) {
  
 var bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
-// parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
-
-// parse application/json
-app.use(bodyParser.json())
-// get some data
-app.get('/api/someData', function(req, res) {
-  //do stuff to get data
-  var data={somedata:[1,2,3,4]}
-  res.json(data);
-});
  
-// save a data
+// save mail
 app.post('/api/subscribe', function(req, res) {
   //do stuffs to save
-  var data = req.body;
-  console.log(data.email)
-  //try{
-  	var mailId=data.email;
-  	var saveIt=DBOperator.saveMail(data.email);
-  	switch(saveIt){
-  		case 1:
-  			console.log("Subscribed successfully");
-  		case -1:
-  			console.log("already subscribed");
-  		default:
-  			console.log("unknown error occured");
+    var data = req.body;
+  	var responseObj ={
+  		isSuccess:false,
+  		errMsg:''
   	}
- //  }
- //  catch(e){
-	// console.log("ERROR");
- //  }
-  //res.json({isSaved:true});
+
+  	console.log("email is: "+data.email);
+  	if(!data.email || !validateEmail(data.email)){
+  		console.log("validation error")
+  		responseObj.isSuccess=false;
+  		responseObj.errMsg="Email id not valid";
+  		res.json(responseObj);
+  	}
+  	else{
+  	DBOperator.saveMail(data.email);
+  		responseObj.isSuccess=true;
+  		responseObj.errMsg="";
+  		res.json(responseObj)
+  	}
 });
 
- 
-//};
+function validateEmail(email) {
+    var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+    return re.test(email);
+}
 
 //----------- routing ends -----------------//
 
