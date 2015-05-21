@@ -1,16 +1,23 @@
 var http = require('http');
 var express = require('express');
 var app = express();
-//---------- routing starts ---------------//
-//module.exports = function(app) {
- 
 var bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+//var cors = require('cors');
 
  
+
+//app.configure(function() {
+	app.use(bodyParser.urlencoded({ extended: false }));
+	app.use(bodyParser.json());
+    //app.use(cors);
+    
+//});
+
+
 // save mail
 app.post('/api/subscribe', function(req, res) {
+	 res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
   //do stuffs to save
     var data = req.body;
   	var responseObj ={
